@@ -13,7 +13,7 @@
   const BLOCK_SPACING = PORTRAIT?H+550:1450, CAMERA_Y = PORTRAIT?Math.round(H*.56):390;
   const START_INTERSECTION_Y = PORTRAIT?H-460:367.5, PLAYER_X = Math.round(ROAD_L+(ROAD_R-ROAD_L)*.616), PLAYER_START_Y=H-110;
   canvas.width=W;canvas.height=H;
-  const STREET_NAMES = window.VINOHRADY_STREETS || ['VinohradskÃ¡','KorunnÃ­','SlezskÃ¡'];
+  const STREET_NAMES = window.VINOHRADY_STREETS || ['Vinohradská','Korunní','Slezská'];
   const keys = { up:false, down:false, left:false, right:false };
   const touchInput = { active:false, x:0, y:0, pointerId:null };
   const ui = Object.fromEntries(['score','best','time','startScreen','gameOverScreen','pauseScreen','finishScreen','finalScore','finishScore','crashTitle','crashText','lightLabel','miniLight','phaseBar','toast','violationList','violationCount'].map(id => [id, document.getElementById(id)]));
@@ -47,7 +47,7 @@
   function gameOver(type){
     if(state!=='playing') return;
     state='over'; shake=18;
-    const info = type==='red' ? ['ÄŒERVENÃ!','ProjÃ­Å¾dÄ›t na Äervenou se nevyplÃ¡cÃ­.'] : ['NEHODA!','Nedobrzdil jsi pÅ™ed jinÃ½m vozidlem.'];
+    const info = type==='red' ? ['ČERVENÁ!','Projíždět na červenou se nevyplácí.'] : ['NEHODA!','Nedobrzdil jsi před jiným vozidlem.'];
     ui.crashTitle.textContent=info[0]; ui.crashText.textContent=info[1]; ui.finalScore.textContent=pad(score);
     best=Math.max(best,Math.floor(score)); localStorage.setItem('krizovatka63-best',best); updateHud();
     for(let i=0;i<26;i++) particles.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:rand(-150,150),vy:rand(-150,150),life:rand(.4,1),c:i%3?'#ffb52c':'#e84c2e'});
@@ -64,10 +64,10 @@
   }
   function renderViolations(){
     ui.violationCount.textContent=violations.length;ui.violationList.replaceChildren();
-    if(!violations.length){const li=document.createElement('li');li.className='empty';li.textContent='ÄŒISTÃ JÃZDA';ui.violationList.append(li);return}
+    if(!violations.length){const li=document.createElement('li');li.className='empty';li.textContent='ČISTÁ JÍZDA';ui.violationList.append(li);return}
     for(const item of violations.slice(0,7)){
       const li=document.createElement('li'),time=document.createElement('time'),label=document.createElement('span'),points=document.createElement('strong');
-      time.textContent=item.time;label.textContent=item.label;points.textContent=String(item.points).replace('-', 'âˆ’');li.append(time,label,points);ui.violationList.append(li);
+      time.textContent=item.time;label.textContent=item.label;points.textContent=String(item.points).replace('-', '–');li.append(time,label,points);ui.violationList.append(li);
     }
   }
   function updateLight(){
@@ -76,7 +76,7 @@
     if(lightState!==lastLightState){
       lastLightState=lightState;
       ui.miniLight.className='mini-light '+lightState;
-      const data={red:['STÅ®J','#ff4b39'],yellow:['POZOR','#ffc52e'],green:['VOLNO','#73dc4d']}[lightState];
+      const data={red:['STŮJ','#ff4b39'],yellow:['POZOR','#ffc52e'],green:['VOLNO','#73dc4d']}[lightState];
       ui.lightLabel.textContent=data[0]; ui.lightLabel.style.color=data[1]; document.querySelector('.traffic-card').style.borderColor=data[1]; ui.phaseBar.style.background=data[1];
     }
     const ranges={red:[0,6.7],yellow:lightClock%15<7.7?[6.7,7.7]:[13.8,15],green:[7.7,13.8]};
@@ -141,19 +141,19 @@
     const playerCenterX=player.x+player.w/2,centerLine=(ROAD_L+ROAD_R)/2;
     const outsideIntersection=player.y+player.h/2<intersectionY-CROSS_HALF||player.y+player.h/2>intersectionY+CROSS_HALF;
     if(outsideIntersection&&(previousPlayerCenterX<centerLine)!==(playerCenterX<centerLine)){
-      recordViolation('PÅ˜ES PLNOU ÄŒÃRU',-250);showToast('âˆ’250  PÅ˜ES PLNOU ÄŒÃRU');
+      recordViolation('PŘES PLNOU ČÁRU',-250);showToast('–250  PŘES PLNOU ČÁRU');
     }
 
     // Crossing the southern stop line while the vertical direction is red is an immediate violation.
     const currentStop=intersectionY+STOP_OFFSET, currentNorth=intersectionY-CROSS_HALF;
     // Penalties deliberately remain unclamped: the score can continue below zero.
-    if(lightState==='red' && previousFront>=previousStop && player.y<currentStop){recordViolation('PRÅ®JEZD NA ÄŒERVENOU',-1000);showToast('âˆ’1000  PRÅ®JEZD NA ÄŒERVENOU');shake=Math.max(shake,4)}
-    if(!crossed && previousFront+player.h>=previousNorth && player.y+player.h<currentNorth){ crossed=true; score+=500; showToast('+500  ÄŒISTÃ PRÅ®JEZD'); }
+    if(lightState==='red' && previousFront>=previousStop && player.y<currentStop){recordViolation('PRŮJEZD NA ČERVENOU',-1000);showToast('–1000  PRŮJEZD NA ČERVENOU');shake=Math.max(shake,4)}
+    if(!crossed && previousFront+player.h>=previousNorth && player.y+player.h<currentNorth){ crossed=true; score+=500; showToast('+500  ČISTÝ PRŮJEZD'); }
     if(intersectionY>H+285){
       intersectionY-=BLOCK_SPACING;intersectionIndex++;crossed=false;traffic=[];spawnClock=.15;
       seedIntersectionEmergency(false);
       lightClock=Math.random()<.48?rand(.4,3.6):rand(7.8,10.6);lastLightState='';updateLight();
-      showToast('PÅ˜ED TEBOU: '+district().street);
+      showToast('PŘED TEBOU: '+district().street);
     }
 
     spawnClock-=dt;
@@ -283,11 +283,11 @@
   function pxRect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
   function district(){
     const districts=[
-      {street:'VINOHRADSKÃ',wall:'#9a4b37',wall2:'#a27d52',accent:'#d8bd65'},
-      {street:'Å½IÅ½KOVSKÃ',wall:'#76574b',wall2:'#8d3f38',accent:'#70a8b5'},
-      {street:'KARLÃNSKÃ',wall:'#9b744b',wall2:'#576f76',accent:'#df8e52'},
-      {street:'LETENSKÃ',wall:'#754d6c',wall2:'#9b603e',accent:'#85a957'},
-      {street:'NÃDRAÅ½NÃ',wall:'#596a70',wall2:'#82463c',accent:'#cfbd83'}
+      {street:'VINOHRADSKÁ',wall:'#9a4b37',wall2:'#a27d52',accent:'#d8bd65'},
+      {street:'ŽIŽKOVSKÁ',wall:'#76574b',wall2:'#8d3f38',accent:'#70a8b5'},
+      {street:'KARLÍNSKÁ',wall:'#9b744b',wall2:'#576f76',accent:'#df8e52'},
+      {street:'LETENSKÁ',wall:'#754d6c',wall2:'#9b603e',accent:'#85a957'},
+      {street:'NÁDRAŽNÍ',wall:'#596a70',wall2:'#82463c',accent:'#cfbd83'}
     ];
     if(!streetDeck.length)streetDeck=[...STREET_NAMES];
     return {...districts[intersectionIndex%districts.length],street:streetDeck[intersectionIndex%streetDeck.length]};
@@ -321,7 +321,7 @@
     drawBuildings(crossT,crossB,d); drawLights(crossT,crossB);
   }
   function drawBuildings(crossT,crossB,d){
-    const labels=[['KAVÃRNA','HOTEL 63','SERVIS','PNEU'],['VINYL','KINO','BISTRO','DÃLNA'],['PEKÃRNA','ATELIÃ‰R','MARKET','GARÃÅ½']][intersectionIndex%3];
+    const labels=[['KAVÁRNA','HOTEL 63','SERVIS','PNEU'],['VINYL','KINO','BISTRO','DÍLNA'],['PEKÁRNA','ATELIÉR','MARKET','GARÁŽ']][intersectionIndex%3];
     const leftX=10,leftW=Math.max(56,ROAD_L-28),rightX=ROAD_R+18,rightW=Math.max(56,W-rightX-10);
     building(leftX,crossT-140,leftW,112,d.wall,'#2a3134',labels[0]);building(rightX,crossT-203,rightW,150,d.wall2,'#26343a',labels[1]);building(leftX,crossB+60,leftW,150,d.wall2,'#233238',labels[2]);building(rightX,crossB+58,rightW,150,d.wall,'#28343a',labels[3]);
     // small trees
