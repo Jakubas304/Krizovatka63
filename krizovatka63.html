@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101419">
+  <meta name="description" content="Dokážete projet vinohrady lépe, než Zmoštěnec?" data-id="th-modified">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:type" content="website" data-id="th-modified">
+  <meta property="og:url" content="https://krizovatka63.tiiny.site/" data-id="th-modified">
+  <meta property="og:title" content="Křižovatka 63" data-id="th-modified">
+  <meta property="og:description" content="Dokážete projet vinohrady lépe, než Zmoštěnec?" data-id="th-modified">
+  <meta property="og:image" content="https://krizovatka63.tiiny.site/og-image.jpg" data-id="th-modified">
+  <meta property="og:image:secure_url" content="https://krizovatka63.tiiny.site/assets/social-cover-v2.png?v=2">
+  <meta property="og:image:type" content="image/jpeg" data-id="th-modified">
+  <meta property="og:image:width" content="614" data-id="th-modified">
+  <meta property="og:image:height" content="455" data-id="th-modified">
+  <meta property="og:image:alt" content="Pixel art blonďatého akčního řidiče v béžovém obleku a černém Mercedesu projíždějícího Vinohrady">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://krizovatka63.tiiny.site/">
+  <meta name="twitter:title" content="Křižovatka 63">
+  <meta name="twitter:description" content="Dokážete projet Vinohrady lépe, než zmoštěnec?">
+  <meta name="twitter:image" content="https://krizovatka63.tiiny.site/assets/social-cover-v2.png?v=2">
+  <meta name="twitter:image:alt" content="Pixel art blonďatého akčního řidiče v béžovém obleku a černém Mercedesu projíždějícího Vinohrady">
+  <link rel="canonical" href="https://krizovatka63.tiiny.site/">
+  <title data-id="th-modified">Křižovatka 63</title>
+  <link rel="stylesheet" href="style.css">
+<script defer data-domain="krizovatka63.tiiny.site" src="https://analytics.tiiny.net/js/plausible.js"></script></head>
+<body>
+  <main class="game-shell" aria-label="Křižovatka 63">
+    <canvas id="game" width="1280" height="720" aria-label="Herní plocha"></canvas>
+
+    <header class="hud">
+      <div class="brand"><span class="brand-mark">◆</span><span>KŘIŽOVATKA <b>63</b></span></div>
+      <div class="stats">
+        <div><small>SKÓRE</small><strong id="score">000000</strong></div>
+        <div><small>NEJLEPŠÍ</small><strong id="best">000000</strong></div>
+        <div><small>ČAS</small><strong id="time">00:00</strong></div>
+      </div>
+      <button class="icon-button" id="pauseBtn" type="button" aria-label="Pauza">Ⅱ</button>
+    </header>
+
+    <section class="traffic-card" aria-live="polite">
+      <div class="mini-light" id="miniLight"><i></i><i></i><i></i></div>
+      <div><small>TVŮJ SMĚR</small><strong id="lightLabel">STŮJ</strong></div>
+      <div class="phase"><span id="phaseBar"></span></div>
+    </section>
+
+    <aside class="violation-card" aria-live="polite">
+      <div class="violation-head"><span>PROHŘEŠKY</span><b id="violationCount">0</b></div>
+      <ol id="violationList"><li class="empty">ČISTÁ JÍZDA</li></ol>
+    </aside>
+
+    <div class="toast" id="toast"></div>
+
+    <a class="social-link" href="https://x.com/ASO_Cialni" target="_blank" rel="noopener noreferrer" aria-label="Twitter profil ASO Cialni">
+      <span>𝕏</span> @ASO_Cialni
+    </a>
+
+    <section class="screen active" id="startScreen">
+      <div class="panel">
+        <p class="eyebrow">PRAŽSKÁ DOPRAVNÍ VÝZVA</p>
+        <h1>KŘIŽOVATKA<br><em>63</em></h1>
+        <p class="lead">Dostaň černý Mercedes bezpečně přes křižovatku. Sleduj světla, předvídej provoz a uvolni cestu majákům.</p>
+        <div class="howto">
+          <span><kbd>↑</kbd><kbd>W</kbd> JÍZDA <kbd>↓</kbd><kbd>S</kbd> BRZDA</span>
+          <span><kbd>←</kbd><kbd>→</kbd> PŘEJÍŽDĚNÍ MEZI PRUHY</span>
+          <span><kbd>P</kbd> PAUZA</span>
+        </div>
+        <button class="primary" id="startBtn" type="button">NASTARTOVAT <span>→</span></button>
+        <p class="fineprint">Červená = −1000 • plná čára = −250 • náraz = konec</p>
+      </div>
+    </section>
+
+    <section class="screen" id="gameOverScreen">
+      <div class="panel compact">
+        <p class="eyebrow">JÍZDA UKONČENA</p>
+        <h2 id="crashTitle">NEHODA</h2>
+        <p id="crashText">Nedodržel jsi pravidla provozu.</p>
+        <div class="result"><span>SKÓRE</span><strong id="finalScore">000000</strong></div>
+        <button class="primary" id="restartBtn" type="button">ZKUSIT ZNOVU <span>↻</span></button>
+      </div>
+    </section>
+
+    <section class="screen" id="pauseScreen">
+      <div class="panel compact">
+        <p class="eyebrow">MOTOR BĚŽÍ</p>
+        <h2>PAUZA</h2>
+        <button class="primary" id="resumeBtn" type="button">POKRAČOVAT <span>→</span></button>
+      </div>
+    </section>
+
+    <section class="screen" id="finishScreen">
+      <div class="panel compact finish-panel">
+        <p class="eyebrow">PĚT MINUT ZA VOLANTEM</p>
+        <h2>DOJEL JSI!</h2>
+        <p>Ustál jsi celou směnu bez nehody.</p>
+        <div class="result"><span>VÝSLEDNÉ SKÓRE</span><strong id="finishScore">000000</strong></div>
+        <button class="primary" id="finishRestartBtn" type="button">NOVÁ JÍZDA <span>↻</span></button>
+      </div>
+    </section>
+
+    <div class="touch-controls" id="trackpad" role="application" aria-label="Devítizónový touchpad: polohou prstu řídíš Mercedes">
+      <span class="trackpad-axis horizontal"></span>
+      <span class="trackpad-axis vertical"></span>
+      <span class="trackpad-knob" id="trackpadKnob"></span>
+      <small>TAHEM ŘIĎ</small>
+    </div>
+  </main>
+  <script src="streets.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
