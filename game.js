@@ -4,7 +4,7 @@
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const playerArmSprite = new Image();
-  playerArmSprite.src = 'assets/Tur-arm.png';
+  playerArmSprite.src = 'Tur-arm.png';
 
   const PORTRAIT = matchMedia('(orientation: portrait) and (max-width: 800px)').matches;
   const W = PORTRAIT?720:1280, H = PORTRAIT?Math.max(1200,Math.min(1600,Math.round(720*innerHeight/innerWidth))):720, GAME_DURATION = 300;
