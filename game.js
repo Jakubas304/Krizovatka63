@@ -41,8 +41,8 @@
   function start(){ reset(); state='playing'; hideScreens(); last=performance.now(); document.getElementById("bgmusic").play();}
   function hideScreens(){ document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active')); }
   function setPause(on){
-    if(on && state==='playing'){ state='paused'; ui.pauseScreen.classList.add('active'); }
-    else if(!on && state==='paused'){ state='playing'; ui.pauseScreen.classList.remove('active'); last=performance.now(); }
+    if(on && state==='playing'){ state='paused'; ui.pauseScreen.classList.add('active'); document.getElementById("bgmusic").pause();}
+    else if(!on && state==='paused'){ state='playing'; ui.pauseScreen.classList.remove('active'); last=performance.now(); document.getElementById("bgmusic").play();}
   }
   function gameOver(type){
     if(state!=='playing') return;
